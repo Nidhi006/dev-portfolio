@@ -41,28 +41,6 @@ An interactive, game-inspired developer portfolio built with **React + Vite**. V
 - `prefers-reduced-motion` support
 - Semantic roles (banner, alert, progressbar, etc.)
 
-## 📁 Project Structure
-
-```
-nidhi-rpg-portfolio/
-├── public/
-│   └── favicon.svg              # Emoji favicon
-├── src/
-│   ├── data/
-│   │   ├── gameData.js          # Zones, achievements, levels, collision, eggs, NPCs
-│   │   └── portfolioData.js     # Skills, experience, projects, certifications
-│   ├── hooks/
-│   │   └── useSound.js          # Web Audio API sound effect system
-│   ├── styles/
-│   │   └── global.css           # All animations, accessibility, responsive rules
-│   ├── App.jsx                  # Main application (all components)
-│   └── main.jsx                 # React entry point
-├── index.html                   # HTML with SEO meta tags & Open Graph
-├── package.json                 # Dependencies & scripts
-├── vite.config.js               # Vite configuration
-└── README.md                    # This file
-```
-
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -97,67 +75,6 @@ Output goes to `dist/` folder.
 npm run preview
 ```
 
-## 🌐 Deployment
-
-### Vercel (Recommended)
-1. Push to GitHub
-2. Go to [vercel.com](https://vercel.com) → Import project
-3. Framework: **Vite** (auto-detected)
-4. Deploy — done!
-
-### Netlify
-1. Push to GitHub
-2. Go to [netlify.com](https://netlify.com) → New site from Git
-3. Build command: `npm run build`
-4. Publish directory: `dist`
-
-### GitHub Pages
-```bash
-npm run build
-# Deploy the dist/ folder to gh-pages branch
-```
-
-## 🎯 Customizing Content
-
-### Update Your Info
-Edit `src/data/portfolioData.js`:
-- **Skills** — add/remove skills, change levels (1-5)
-- **Experience** — update roles, companies, highlights
-- **Projects** — add new quest cards
-- **Certifications** — add new treasure chests
-
-### Update Game Settings
-Edit `src/data/gameData.js`:
-- **Zones** — change positions, names, colors
-- **Achievements** — add new achievements with XP rewards
-- **Easter Eggs** — change positions and messages
-- **NPCs** — add dialogue and positions
-
-### Contact Form
-The tavern's "Send a Raven" form currently opens a mailto: link. To add a real form backend:
-
-1. Sign up at [formspree.io](https://formspree.io) (free)
-2. Create a form endpoint
-3. In `App.jsx`, find the tavern section and replace the button's onClick with:
-```js
-fetch('https://formspree.io/f/YOUR_ID', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ name, email, message })
-});
-```
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Framework | React 18 |
-| Build Tool | Vite 6 |
-| Styling | Inline styles + CSS animations |
-| Sound | Web Audio API (no external files) |
-| Icons | Native emoji |
-| Fonts | Silkscreen (headings) + Nunito (body) |
-| Charts | Custom SVG radar chart |
 
 ## 📄 License
 
