@@ -44,12 +44,12 @@ export const COLLISION_RECTS = [
 ];
 
 export const EASTER_EGGS = [
-  { id: "cloud", x: 92, y: 10, icon: "☁️", message: "You found the Cloud of Knowledge!" },
-  { id: "star", x: 6, y: 90, icon: "⭐", message: "A fallen star! +75 XP" },
-  { id: "gem", x: 50, y: 8, icon: "💫", message: "The Northern Sparkle!" },
-  { id: "mushroom", x: 10, y: 55, icon: "🍄", message: "A magic mushroom! Not that kind..." },
-  { id: "scroll", x: 42, y: 35, icon: "📖", message: "An ancient scroll of .NET wisdom!" },
-  { id: "fairy", x: 62, y: 42, icon: "🧚", message: "A code fairy blesses your debugging!" },
+  { id: "cloud", icon: "☁️", message: "You found the Cloud of Knowledge!" },
+  { id: "star", icon: "🥚", message: "A fallen star! +75 XP" },
+  { id: "gem", icon: "🥚", message: "The Northern Sparkle!" },
+  { id: "mushroom", icon: "🐣", message: "A magic mushroom! Not that kind..." },
+  { id: "scroll", icon: "🪺", message: "An ancient scroll of .NET wisdom!" },
+  { id: "fairy", icon: "🐣", message: "A code fairy blesses your debugging!" },
 ];
 
 export const MAP_NPCS = [

@@ -8,6 +8,16 @@ import { LoadingScreen, ZoneTransition } from "./components/Screens";
 import { Particles, FootstepDust, ZoneBG, RadarChart, SkillTooltip, EasterEgg, ZoneMarker, MapNPC } from "./components/shared";
 import { WorldMapBG } from "./components/WorldMap";
 import { ZoneInterior } from "./components/Zones";
+import { Chatbot } from "./components/Chatbot";
+
+
+function randomizeEggPositions() {
+  return EASTER_EGGS.map(egg => ({
+    ...egg,
+    x: 8 + Math.random() * 84,   // keep within 8–92% to avoid edges
+    y: 10 + Math.random() * 80,   // keep within 10–90%
+  }));
+}
 
 // ─── Main App ───
 export default function App(){
@@ -22,6 +32,14 @@ export default function App(){
   const[prevLevel,setPrevLevel]=useState(0);
   const keysRef=useRef(new Set());const animRef=useRef(null);const stepIdRef=useRef(0);const stepAccRef=useRef(0);const sprintRef=useRef(false);
   const xpPopIdRef=useRef(0);
+  const [eggPositions, setEggPositions] = useState(() => randomizeEggPositions());
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setEggPositions(randomizeEggPositions());
+  }, 30000); // every 30 seconds
+  return () => clearInterval(interval);
+}, []);
 
   const playSound = useSound(soundOn);
 
@@ -55,8 +73,13 @@ const enterZone=useCallback(zoneId=>{const zone=ZONES.find(z=>z.id===zoneId);set
 
   const checkCollision=useCallback((x,y)=>{for(const r of COLLISION_RECTS){if(x>=r.x1&&x<=r.x2&&y>=r.y1&&y<=r.y2)return true;}return false;},[]);
 
-  useEffect(()=>{if(currentZone||transitionZone)return;const kd=e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D','Enter','e','E','Shift'].includes(e.key)){e.preventDefault();if(e.key==='Enter'||e.key==='e'||e.key==='E'){let n=null,md=Infinity;ZONES.forEach(z=>{const d=Math.sqrt(Math.pow(charPos.x-z.x,2)+Math.pow(charPos.y-z.y,2));if(d<10&&d<md){n=z;md=d;}});if(n)enterZone(n.id);return;}if(e.key==='Shift'){sprintRef.current=true;setIsSprinting(true);if(!achievements.has('speedster'))unlockAchievement('speedster');return;}keysRef.current.add(e.key.toLowerCase());}};
-    const ku=e=>{keysRef.current.delete(e.key.toLowerCase());if(e.key==='Shift'){sprintRef.current=false;setIsSprinting(false);}};window.addEventListener('keydown',kd);window.addEventListener('keyup',ku);return()=>{window.removeEventListener('keydown',kd);window.removeEventListener('keyup',ku);};},[currentZone,transitionZone,charPos,enterZone,achievements,unlockAchievement]);
+  useEffect(()=>{if(currentZone||transitionZone)return;
+    const kd=e=>{
+       if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D','Enter','e','E','Shift'].includes(e.key)){e.preventDefault();if(e.key==='Enter'||e.key==='e'||e.key==='E'){let n=null,md=Infinity;ZONES.forEach(z=>{const d=Math.sqrt(Math.pow(charPos.x-z.x,2)+Math.pow(charPos.y-z.y,2));
+      if(d<10&&d<md){n=z;md=d;}});if(n)enterZone(n.id);return;}if(e.key==='Shift'){sprintRef.current=true;setIsSprinting(true);if(!achievements.has('speedster'))unlockAchievement('speedster');return;}keysRef.current.add(e.key.toLowerCase());}};
+    const ku=e=>{keysRef.current.delete(e.key.toLowerCase());if(e.key==='Shift'){sprintRef.current=false;setIsSprinting(false);}};window.addEventListener('keydown',kd);window.addEventListener('keyup',ku);return()=>{window.removeEventListener('keydown',kd);
+      window.removeEventListener('keyup',ku);};},[currentZone,transitionZone,charPos,enterZone,achievements,unlockAchievement]);
 
   useEffect(()=>{if(currentZone||transitionZone)return;const tick=()=>{const keys=keysRef.current;const spd=sprintRef.current?0.54:0.3;let dx=0,dy=0;
     if(keys.has('w')||keys.has('arrowup')){dy-=spd;setCharDir('up');}if(keys.has('s')||keys.has('arrowdown')){dy+=spd;setCharDir('down');}if(keys.has('a')||keys.has('arrowleft')){dx-=spd;setCharDir('left');}if(keys.has('d')||keys.has('arrowright')){dx+=spd;setCharDir('right');}
@@ -71,12 +94,13 @@ const enterZone=useCallback(zoneId=>{const zone=ZONES.find(z=>z.id===zoneId);set
   const handleDirEnd=useCallback(dir=>{if(dir==='sprint'){sprintRef.current=false;setIsSprinting(false);return;}keysRef.current.delete({up:'w',down:'s',left:'a',right:'d'}[dir]);},[]);
   const handleMobileAction=useCallback(()=>{let n=null,md=Infinity;ZONES.forEach(z=>{const d=Math.sqrt(Math.pow(charPos.x-z.x,2)+Math.pow(charPos.y-z.y,2));if(d<10&&d<md){n=z;md=d;}});if(n)enterZone(n.id);},[charPos,enterZone]);
 
-  if(!started)return <><LoadingScreen onDone={()=>{setStarted(true);unlockAchievement('first_step');}}/></>;
+  if(!started)return <><LoadingScreen onDone={()=>{setStarted(true);unlockAchievement('first_step');}}/> <Chatbot /></>;
   if(currentZone)return <>
     <HUD xp={xp} visitedCount={visitedZones.size} showAchievement={showAchievement} onToggleSound={()=>setSoundOn(!soundOn)} soundOn={soundOn} isSprinting={false} stepsCount={stepsCount} achievements={achievements} onShowGallery={()=>setShowGallery(true)} xpPopups={xpPopups}/>
     <ZoneInterior zoneId={currentZone} onBack={()=>setCurrentZone(null)} onXp={addXp} onAchieve={unlockAchievement} playSound={playSound}/>
     {showGallery&&<AchievementGallery achievements={ACHIEVEMENTS} unlocked={achievements} xp={xp} onClose={()=>setShowGallery(false)}/>}
     {levelUpData&&<LevelUpCelebration level={levelUpData} onDone={()=>setLevelUpData(null)}/>}
+       <Chatbot />
   </>;
 
   return <>
@@ -87,7 +111,7 @@ const enterZone=useCallback(zoneId=>{const zone=ZONES.find(z=>z.id===zoneId);set
         <WorldMapBG/><Particles/><FootstepDust steps={footsteps}/>
         {ZONES.map(z=><ZoneMarker key={z.id} zone={z} isVisited={visitedZones.has(z.id)} onEnter={enterZone} charPos={charPos}/>)}
         {MAP_NPCS.map((n,i)=><MapNPC key={i} npc={n} charPos={charPos}/>)}
-        {EASTER_EGGS.map(e=><EasterEgg key={e.id} egg={e} found={foundEggs.has(e.id)} onFind={findEgg}/>)}
+        {eggPositions.map(e => <EasterEgg key={e.id} egg={e} found={foundEggs.has(e.id)} onFind={findEgg} />)}
         <CharacterSprite pos={charPos} direction={charDir} isMoving={isMoving} isSprinting={isSprinting}/>
         <div style={{position:'absolute',top:44,left:'50%',transform:'translateX(-50%)',zIndex:5,textAlign:'center',pointerEvents:'none'}}>
           <div style={{fontFamily:"'Silkscreen',cursive",fontSize:20,color:'#3a3a5c',textShadow:'0 2px 10px rgba(255,255,255,0.9)',letterSpacing:1.5}}>🗺️ World of Nidhi</div></div>
@@ -99,6 +123,7 @@ const enterZone=useCallback(zoneId=>{const zone=ZONES.find(z=>z.id===zoneId);set
     </div>
     {showGallery&&<AchievementGallery achievements={ACHIEVEMENTS} unlocked={achievements} xp={xp} onClose={()=>setShowGallery(false)}/>}
     {levelUpData&&<LevelUpCelebration level={levelUpData} onDone={()=>setLevelUpData(null)}/>}
+       <Chatbot />
   </>;
 }
 

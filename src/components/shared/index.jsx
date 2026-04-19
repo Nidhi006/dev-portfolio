@@ -97,8 +97,11 @@ export function SkillTooltip({ skill, catColor }) {
 // ─── Easter Egg ───
 export function EasterEgg({ egg, found, onFind }) {
   const [h, setH] = useState(false);
+    const colors = { cloud: "#5BC0EB", star: "#FDE74C", gem: "#C47ED0", mushroom: "#E55934", scroll: "#9BC53D", fairy: "#FA7921" };
   if (found) return null;
-  return <div onClick={() => onFind(egg)} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} style={{ position: 'absolute', left: `${egg.x}%`, top: `${egg.y}%`, transform: 'translate(-50%,-50%)', fontSize: h ? 22 : 13, cursor: 'pointer', zIndex: 8, opacity: h ? 1 : 0.25, transition: 'all 0.3s', filter: h ? 'drop-shadow(0 0 10px gold)' : 'none' }}>{egg.icon}</div>;
+  return <div onClick={() => onFind(egg)} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} style={{ position: 'absolute', left: `${egg.x}%`, top: `${egg.y}%`, transform: 'translate(-50%,-50%)', fontSize: h ? 22 : 13, cursor: 'pointer', zIndex: 8, opacity: h ? 1 : 0.25, transition: 'all 0.3s', filter: h ? 'drop-shadow(0 0 10px gold)' : 'none' }}>
+        <span style={{ display: 'inline-block', width: h ? 22 : 14, height: h ? 28 : 18, borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%', background: `linear-gradient(135deg, ${colors[egg.id] || '#FFD700'}, ${colors[egg.id] || '#FFD700'}88)`, border: '2px solid rgba(255,255,255,0.6)', boxShadow: `0 0 ${h ? 10 : 4}px ${colors[egg.id] || '#FFD700'}88`, transition: 'all 0.3s' }} />
+    </div>;
 }
 
 // ─── Zone Marker ───
